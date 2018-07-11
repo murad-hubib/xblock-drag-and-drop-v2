@@ -213,7 +213,7 @@ function DragAndDropTemplates(configuration) {
     // same amount of space as the original item so that the bank does not collapse when you've dragged
     // all items out.
     var itemPlaceholderTemplate = function(item, ctx) {
-        var className = "";
+        var className = "dropped";
         if (item.has_image) {
             className += " " + "option-with-image";
         }
@@ -222,7 +222,6 @@ function DragAndDropTemplates(configuration) {
         }
         var style = bankItemWidthStyles(item, ctx);
         // todo V4 remove this line after styling
-        style.background = 'gray';
         var attributes = {
             'draggable': false,
             'data-value': item.value
@@ -947,10 +946,14 @@ function DragAndDropBlock(runtime, element, configuration) {
         // so that images contained in the droppable items are loaded properly.
         if (pageLoaded) {
             itemSlider = $root.find('.item-bank').bxSlider({
-                speed: 0,
+                speed: 400,
                 pager: false,
                 infiniteLoop: false,
+                hideControlOnEnd: true,
                 startSlide: currentSlideIndex,
+                nextText: '<i class="fa fa-angle-right"></i>',
+                prevText: '<i class="fa fa-angle-left"></i>'
+
                 // Workaround: mobile touch drag and drop behavior is broken,
                 // but disabling touch allows click events to come through.
                 touchEnabled: false
