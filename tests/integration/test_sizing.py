@@ -276,7 +276,7 @@ class SizingTests(InteractionTestBase, BaseIntegrationTest):
         for expect in expectations:
             self._load_current_slide_by_item_id(expect.item_id)
             # V4 todo: rewrite these tests after making fixed width in MCKIN-7971
-            expected_width_percent = expect.width_percent_bank or expect.width_percent
+            # expected_width_percent = expect.width_percent_bank or expect.width_percent
             # if expected_width_percent is not None:
             #     self._check_width(
             #         item_description="Unplaced item {}".format(expect.item_id),
