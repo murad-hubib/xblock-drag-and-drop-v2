@@ -173,6 +173,10 @@ class BaseIntegrationTest(SeleniumBaseTest):
         self.browser.execute_script("arguments[0].scrollIntoView(0);", reset)
         self.wait_until_visible(reset)
 
+    def _scroll_to_item_bank(self):
+        item_bank = self._page.find_element_by_css_selector('.item-bank')
+        self.browser.execute_script("arguments[0].scrollIntoView(0);", item_bank)
+
     def _get_show_answer_button(self):
         return self._page.find_element_by_css_selector('.show-answer-button')
 
@@ -475,6 +479,16 @@ class InteractionTestBase(object):
         for _ in range(tab_press_count):
             ActionChains(self.browser).send_keys(Keys.TAB).perform()
         zone.send_keys(action_key)
+
+    def close_feedback_popup(self):
+        css = '.close-feedback-popup-button'
+        popup = self._page.find_element_by_css_selector(css)
+        self.wait_until_visible(popup)
+        popup.click()
+
+    def place_item_and_close_popup(self, item_value, zone_id, action_key=None, wait=True):
+        self.place_item(item_value, zone_id, action_key, wait)
+        self.close_feedback_popup()
 
     def assert_item_grabbed(self, item):
         self.assertEqual(item.get_attribute('aria-grabbed'), 'true')

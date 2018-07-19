@@ -533,7 +533,7 @@ function DragAndDropTemplates(configuration) {
                         h(
                             'span.text',
                             {
-                                innerHTML: gettext("Some text"),
+                                innerHTML: ctx.last_action_correct ? gettext("Select Another Tile") : gettext("Try Again"),
                                 attributes: {
                                     'aria-hidden': true
                                 }
@@ -953,7 +953,7 @@ function DragAndDropBlock(runtime, element, configuration) {
                 hideControlOnEnd: true,
                 startSlide: currentSlideIndex,
                 nextText: '<i class="fa fa-angle-right"></i>',
-                prevText: '<i class="fa fa-angle-left"></i>'
+                prevText: '<i class="fa fa-angle-left"></i>',
 
                 // Workaround: mobile touch drag and drop behavior is broken,
                 // but disabling touch allows click events to come through.

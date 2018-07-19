@@ -179,7 +179,7 @@ class ParameterizedTestsMixin(object):
         # zones or back to the bank.
         for item_key, definition in items_map.items():
             if definition.zone_ids:  # skip decoy items
-                self.place_item(definition.item_id, definition.zone_ids[0], action_key)
+                self.place_item_and_close_popup(definition.item_id, definition.zone_ids[0], action_key)
                 self.assert_placed_item(definition.item_id, definition.zone_title, assessment_mode=False)
                 if action_key:
                     item = self._get_item_by_value(definition.item_id)
@@ -218,6 +218,9 @@ class ParameterizedTestsMixin(object):
 
         for item_key, definition in items.items():
             self.place_item(definition.item_id, definition.zone_ids[0], action_key)
+            if not assessment_mode:
+                self.close_feedback_popup()
+
             self.assert_placed_item(definition.item_id, definition.zone_title, assessment_mode=assessment_mode)
 
         if assessment_mode:
@@ -231,7 +234,7 @@ class ParameterizedTestsMixin(object):
         self.assert_decoy_items(items_map, assessment_mode=assessment_mode)
 
         # Scroll "Reset problem" button into view to make sure Selenium can successfully click it
-        self.scroll_down(pixels=scroll_down+150)
+        self._scroll_to_reset_button()
 
         reset = self._get_reset_button()
         if action_key is not None:  # Using keyboard to interact with block
@@ -331,7 +334,7 @@ class StandardInteractionTest(DefaultDataTestMixin, InteractionTestBase, Paramet
 
         # Place all items in zones where they belong
         for definition in self._get_items_with_zone(self.items_map).values():
-            self.place_item(definition.item_id, definition.zone_ids[0])
+            self.place_item_and_close_popup(definition.item_id, definition.zone_ids[0])
 
         # Check if alt text appears for that item when the user tabs over the zone
         for zone_id, items_dict in self._get_items_by_zone(self.items_map).items():
@@ -366,7 +369,7 @@ class StandardInteractionTest(DefaultDataTestMixin, InteractionTestBase, Paramet
 
         # Place items into correct zones one by one:
         for idx, item in enumerate(items_with_zones):
-            self.place_item(item.item_id, item.zone_ids[0])
+            self.place_item_and_close_popup(item.item_id, item.zone_ids[0])
             # The number of items in correct positions currently equals:
             # the number of items already placed + any decoy items which should stay in the bank.
             grade = (idx + 1 + len(items_without_zones)) / float(total_items)
@@ -423,6 +426,7 @@ class StandardInteractionTest(DefaultDataTestMixin, InteractionTestBase, Paramet
     def test_mouse_drag_zones_outline(self):
         self.scroll_down(pixels=200)
         for _, definition in self.items_map.items():
+            self._scroll_to_item_bank()
             item = self._get_item_by_value(definition.item_id)
             self.wait_until_visible(item)
 
@@ -440,6 +444,7 @@ class StandardInteractionTest(DefaultDataTestMixin, InteractionTestBase, Paramet
                 ActionChains(self.browser).release(target).perform()
                 drag_container = self._page.find_element_by_css_selector('.drag-container')
                 self.wait_until_has_attribute_value('class', 'drag-container', drag_container, timeout=10)
+                self.close_feedback_popup()
 
 
 class MultipleValidOptionsInteractionTest(DefaultDataTestMixin, InteractionTestBase, BaseIntegrationTest):
@@ -680,7 +685,7 @@ class ZoneAlignInteractionTest(InteractionTestBase, BaseIntegrationTest):
             for action_key in self.ACTION_KEYS:
                 self._assert_zone_align_item(item, zone, alignment, action_key)
                 # Reset exercise
-                self.scroll_down(pixels=200)
+                self._scroll_to_reset_button()
                 reset.click()
                 self.scroll_down(pixels=0)
                 self.wait_until_disabled(reset)
@@ -699,13 +704,18 @@ class TestMaxItemsPerZone(InteractionTestBase, BaseIntegrationTest):
         scenario_data = loader.load_unicode("data/test_zone_align.json")
         return self._make_scenario_xml(data=scenario_data, max_items_per_zone=2)
 
+    def _place_tile(self, item_id, zone_id):
+        self.place_item(item_id, zone_id)
+        if not self.assessment_mode:
+            self.close_feedback_popup()
+
     def test_item_returned_to_bank(self):
         """
         Tests that an item is returned to bank if max items per zone reached
         """
         zone_id = "Zone No Align"
-        self.place_item(0, zone_id)
-        self.place_item(1, zone_id)
+        self._place_tile(0, zone_id)
+        self._place_tile(1, zone_id)
 
         # precondition check - max items placed into zone
         self.assert_placed_item(0, zone_id, assessment_mode=self.assessment_mode)
@@ -728,15 +738,15 @@ class TestMaxItemsPerZone(InteractionTestBase, BaseIntegrationTest):
         Tests that an item returned to the bank stays there after page refresh
         """
         zone_id = "Zone Left Align"
-        self.place_item(6, zone_id)
-        self.place_item(7, zone_id)
+        self._place_tile(6, zone_id)
+        self._place_tile(7, zone_id)
 
         # precondition check - max items placed into zone
         self.assert_placed_item(6, zone_id, assessment_mode=self.assessment_mode)
         self.assert_placed_item(7, zone_id, assessment_mode=self.assessment_mode)
 
-        self.place_item(8, zone_id)
-
+        # there would be a popup in max item case regardless of current mode
+        self.place_item_and_close_popup(8, zone_id)
         self.assert_reverted_item(8)
 
         self._page = self.go_to_page(self.PAGE_TITLE)  # refresh the page
