@@ -104,10 +104,6 @@
     padding: 0; /* padding: 5px looks better but makes some blocks to change in size when dropped onto the target; */
 }
 
-.xblock--drag-and-drop .drag-container .dropped {
-    background-color: gray !important;
-}
-
 .xblock--drag-and-drop .drag-container .option {
     display: inline-block;
     width: 150px;
@@ -130,6 +126,11 @@
     z-index: 10 !important;
     -webkit-touch-callout: none;
     position: relative;
+}
+
+.xblock--drag-and-drop .drag-container .dropped {
+    background-color: gray;
+    color: gray;
 }
 
 /*Item bank slider*/
@@ -201,9 +202,6 @@
     align-items: center; /* align vertical */
 }
 
-.xblock--drag-and-drop .drag-container .dropped * {
-    display: none !important;
-}
 .xblock--drag-and-drop .drag-container .option .item-content {
     display: inline-block;
     width: 100%; /* Make sure size of content never exceeds size of item */

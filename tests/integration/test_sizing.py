@@ -324,9 +324,7 @@ class SizingTests(InteractionTestBase, BaseIntegrationTest):
 
         # Test that the item bank maintains its original size.
         self.assertEqual(item_bank.size["width"], item_bank_width)
-
-        # V4 todo: pass this test after restyling of item bank in MCKIN-7971
-        # self.assertEqual(item_bank.size["height"], item_bank_height)
+        self.assertEqual(item_bank.size["height"], item_bank_height)
 
 
 class AlignedSizingTests(SizingTests):
