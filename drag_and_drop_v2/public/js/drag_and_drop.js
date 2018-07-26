@@ -533,7 +533,7 @@ function DragAndDropTemplates(configuration) {
                         h(
                             'span.text',
                             {
-                                innerHTML: ctx.last_action_correct ? gettext("Select Another Tile") : gettext("Try Again"),
+                                innerHTML: ctx.last_action_correct ? gettext("Select Another Item") : gettext("Try Again"),
                                 attributes: {
                                     'aria-hidden': true
                                 }
