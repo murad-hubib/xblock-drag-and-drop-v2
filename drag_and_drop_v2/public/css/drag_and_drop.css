@@ -364,8 +364,8 @@
 /*** FEEDBACK ***/
 
 .xblock--drag-and-drop .feedback {
-    margin-bottom: 1%;
-    border-top: solid 1px #bdbdbd;
+    display: none;
+    visibility: hidden;
 }
 
 .xblock--drag-and-drop .feedback p {
@@ -715,7 +715,7 @@
     height: 62px;
     padding: 9px 20px;
     box-sizing: border-box;
-
+    margin-bottom: 1%;
 }
 
 .xblock--drag-and-drop .actions-toolbar .action-toolbar-item {
