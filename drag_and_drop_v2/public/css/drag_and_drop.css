@@ -188,7 +188,7 @@
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
-    box-shadow: 0 0 15px #333333;
+    box-shadow: 0 0 15px #666666;
 }
 
 .xblock--drag-and-drop .instructions-visible:after {
@@ -198,8 +198,13 @@
     top: 0;
     bottom: 0;
     content: "";
-    background-color: #1d5280;
+    background-color: rgba(255,255,255,0.1);
     z-index: 10;
+    -webkit-filter: blur(20px);
+    -moz-filter: blur(20px);
+    -o-filter: blur(20px);
+    -ms-filter: blur(20px);
+    filter: blur(20px);
 }
 .xblock--drag-and-drop .instructions-visible + .actions-toolbar {
     display: none;
